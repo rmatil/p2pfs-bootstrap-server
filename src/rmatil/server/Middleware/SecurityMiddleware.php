@@ -17,7 +17,7 @@ class SecurityMiddleware extends Middleware {
         $token = $this->app->request->params('token');
 
         // Stupid, i know
-        if (null === $token ||$token !== 'tab=4') {
+        if (null === $token || $token !== 'tabequals4') {
             $this->app->response->setStatus(HttpStatusCodes::UNAUTHORIZED);
             return;
         }
