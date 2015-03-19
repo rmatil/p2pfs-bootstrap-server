@@ -5,6 +5,8 @@ namespace rmatil\server\Controller;
 use SlimController\SlimController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Filesystem\Exception\FileNotFoundException;
+use Symfony\Component\Filesystem\Exception\IOException;
 use rmatil\server\Constants\HttpStatusCodes;
 
 class AppController extends SlimController {
@@ -57,7 +59,7 @@ class AppController extends SlimController {
 
     protected function writeAddressToJsonToFile(Filesystem $fs, $path, $ipAddress) {
         if (!$fs->exists($path)) {
-            throw new IOExceptionInterface(sprintf('Path "%s" not found', $path));
+            throw new FileNotFoundException(sprintf('Path "%s" not found', $path));
         }
 
         $content = file_get_contents($path);
@@ -69,7 +71,7 @@ class AppController extends SlimController {
 
         if (!flock($fileHandle, LOCK_EX)) {  // acquire an exclusive lock
             fclose($fileHandle);
-            throw new IOExceptionInterface(sprintf('Write to file "%s" failed. An exclusive lock may already exist', $path));
+            throw new IOException(sprintf('Write to file "%s" failed. An exclusive lock may already exist', $path));
         }
 
         // truncate file
@@ -102,7 +104,7 @@ class AppController extends SlimController {
      */
     protected function readJsonFileContents(Filesystem $fs, $path) {
         if (!$fs->exists($path)) {
-            throw new IOExceptionInterface(sprintf('Path "%s" not found', $path));
+            throw new FileNotFoundException(sprintf('Path "%s" not found', $path));
         }
 
         $content = file_get_contents($path);
