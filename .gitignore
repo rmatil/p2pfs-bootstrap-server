@@ -6,3 +6,4 @@
 .DS_STORE
 composer.lock
 composer.phar
+/html/addresses/addresses.json
