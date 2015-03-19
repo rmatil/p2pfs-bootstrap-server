@@ -6,7 +6,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 
-require '../vendor/autoload.php';
+require 'vendor/autoload.php';
 
 // enable this for log writing to file
 $logWriter = new LogWriter(fopen(__DIR__.'/logs/server.log', 'a'));
