@@ -35,7 +35,7 @@ $app->container->singleton('fs', function () use ($fs) {
 });
 
 $app->addRoutes(array(
-    '/ip-addresses'         => array('get'     => 'App:listIpAddresses'),
+    '/'                     => array('get'     => 'App:listIpAddresses'),
     '/ip-addresses'         => array('get'     => 'App:listIpAddresses'),
     '/ip-addresses/new'     => array('post'    => 'App:insertIpAddress'),
     '/ip-addresses/refresh' => array('get'     => 'App:refreshIpAddressList'),
