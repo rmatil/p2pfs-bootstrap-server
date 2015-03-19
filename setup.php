@@ -26,7 +26,7 @@ $app = new Slim(array(
 
 
 $fs = new Filesystem();
-$filePath = __DIR__ . "/addresses/addresses.json";
+$filePath = __DIR__ . "/html/addresses/addresses.json";
 
 $app->filePath = $filePath;
 
