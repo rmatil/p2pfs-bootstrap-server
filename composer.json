@@ -1,14 +1,13 @@
 {
-    "name": "slim/slim-skeleton",
-    "description": "A Slim Framework skeleton application for rapid development",
-    "keywords": ["microframework","rest","router"],
-    "homepage": "http://github.com/codeguy/Slim-Skeleton",
+    "name": "rmatil/comsys-bootstrap-server",
+    "description": "The bootstrap server",
+    "keywords": ["bootstrapserver","rest","router"],
+    "homepage": "https://bitbucket.org/rmatil/comsys_bootstrap_server",
     "license": "MIT",
     "authors": [
         {
-            "name": "Josh Lockhart",
-            "email": "info@joshlockhart.com",
-            "homepage": "http://www.joshlockhart.com/"
+            "name": "Raphael Matile",
+            "email": "raphael.matile@gmail.com"
         }
     ],
     "require": {
