@@ -38,6 +38,20 @@ class AppController extends SlimController {
 
         $ipAddress = $this->app->request->params('address');
 
+        // http://stackoverflow.com/questions/9208814/validate-ipv4-ipv6-and-hostname
+        $ipv4Pattern = "/(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/";
+        $ipv6Pattern = "/(([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))/";
+        
+        if (false === preg_match($ipv4Pattern, $ipAddress) ||
+            false === preg_match($ipv6Pattern, $ipAddress)) {
+
+            $now = new DateTime();
+            $this->app->log->error(sprintf('[%s]: %s', $now->format('d-m-Y H:i:s'), $ioe->getMessage()));
+            $this->app->response->setStatus(HttpStatusCodes::BAD_REQUEST);
+            $this->app->response->setBody('Not valid input');
+            return;
+        }
+
         $addresses = '';
         try {
             $addresses = $this->writeAddressToJsonToFile($fs, $path, $ipAddress);            
@@ -55,9 +69,20 @@ class AppController extends SlimController {
     }
 
     public function refreshIpAddressListAction() {
-
+        $this->app->expires(0);
+        $this->app->response->setStatus(HttpStatusCodes::NOT_IMPLEMENTED);
+        $this->app->response->setBody('Not implemented');
     }
 
+    /**
+     * Writes the given ip address to the provided file path. 
+     * Note: The file should represent a JSON object, in it an array with key 'addresses'.
+     * 
+     * @param  Filesystem $fs        The Symfony Filesystem
+     * @param  string     $path      Path to file (incl. filename)
+     * @param  string     $ipAddress The ip address to add
+     * @return string                The update file contents
+     */
     protected function writeAddressToJsonToFile(Filesystem $fs, $path, $ipAddress) {
         if (!$fs->exists($path)) {
             throw new FileNotFoundException(sprintf('Path "%s" not found', $path));

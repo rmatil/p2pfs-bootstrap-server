@@ -4,7 +4,7 @@ use Slim\LogWriter;
 use SlimController\Slim;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
-
+use rmatil\server\Middleware\SecurityMiddleware;
 
 require 'vendor/autoload.php';
 
@@ -23,6 +23,8 @@ $app = new Slim(array(
     'log.writer'                 => $logWriter, // enable this for log writing to file
     'templates.path'             => '../templates'
 ));
+
+$app->add(new SecurityMiddleware());
 
 
 $fs = new Filesystem();
