@@ -37,12 +37,16 @@ class AppController extends SlimController {
         $path = $this->app->filePath;
 
         $ipAddress = $this->app->request->params('address');
+        $port = $this->app->request->params('port');
 
         // http://stackoverflow.com/questions/9208814/validate-ipv4-ipv6-and-hostname
         $ipv4Pattern = "/(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/";
         $ipv6Pattern = "/(([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))/";
-        
+        $portPattern = "/^\d+$/";
+
         if (null === $ipAddress ||
+            null === $port ||
+            false === preg_match($portPattern, $port) ||
             false === preg_match($ipv4Pattern, $ipAddress) ||
             false === preg_match($ipv6Pattern, $ipAddress)) {
 
@@ -55,7 +59,7 @@ class AppController extends SlimController {
 
         $addresses = '';
         try {
-            $addresses = $this->writeAddressToJsonToFile($fs, $path, $ipAddress);            
+            $addresses = $this->writeAddressToJsonToFile($fs, $path, $ipAddress, $port);
         } catch (IOExceptionInterface $ioe) {
             $now = new DateTime();
             $this->app->log->error(sprintf('[%s]: %s', $now->format('d-m-Y H:i:s'), $ioe->getMessage()));
@@ -82,9 +86,10 @@ class AppController extends SlimController {
      * @param  Filesystem $fs        The Symfony Filesystem
      * @param  string     $path      Path to file (incl. filename)
      * @param  string     $ipAddress The ip address to add
+     * @param  string     $port      The corresponding port
      * @return string                The update file contents
      */
-    protected function writeAddressToJsonToFile(Filesystem $fs, $path, $ipAddress) {
+    protected function writeAddressToJsonToFile(Filesystem $fs, $path, $ipAddress, $port) {
         if (!$fs->exists($path)) {
             throw new FileNotFoundException(sprintf('Path "%s" not found', $path));
         }
@@ -92,11 +97,13 @@ class AppController extends SlimController {
         $content = file_get_contents($path);
         $json = json_decode($content, true);
 
-        if (in_array($ipAddress, $json['addresses'])) {
+        $ipAddressPortPair = array('address' => $ipAddress, 'port' => $port);
+
+        if (in_array($ipAddressPortPair, $json['addresses'])) {
             return $json;
         }
 
-        $json['addresses'][] = $ipAddress;
+        $json['addresses'][] = $ipAddressPortPair;
 
         $fileHandle = fopen($path, "r+");
 
