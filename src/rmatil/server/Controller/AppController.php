@@ -73,10 +73,20 @@ class AppController extends SlimController {
         $this->app->response->setBody($addresses);
     }
 
-    public function refreshIpAddressListAction() {
-        $this->app->expires(0);
-        $this->app->response->setStatus(HttpStatusCodes::NOT_IMPLEMENTED);
-        $this->app->response->setBody('Not implemented');
+    public function removeIpAddress() {
+        $fs = $this->app->fs;
+        $path = $this->app->filePath;
+    }
+
+    protected function removeAddressOnJsonFile(Filesystem $fs, $path, $ipAddress, $port) {
+        if (!$fs->exists($path)) {
+            throw new FileNotFoundException(sprintf('Path "%s" not found', $path));
+        }
+
+        $content = file_get_contents($path);
+        $json = json_decode($content, true);
+
+        $ipAddressPortPair = array('address' => $ipAddress, 'port' => $port);
     }
 
     /**
@@ -99,11 +109,9 @@ class AppController extends SlimController {
 
         $ipAddressPortPair = array('address' => $ipAddress, 'port' => $port);
 
-        if (in_array($ipAddressPortPair, $json['addresses'])) {
-            return json_encode($json);
+        if(false !== ($key = array_search($ipAddressPortPair, $json['addresses']))) {
+            unset($json['addresses'][$key]);
         }
-
-        $json['addresses'][] = $ipAddressPortPair;
 
         $fileHandle = fopen($path, "r+");
 
