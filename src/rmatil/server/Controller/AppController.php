@@ -92,6 +92,10 @@ class AppController extends SlimController {
         $content = file_get_contents($path);
         $json = json_decode($content, true);
 
+        if (in_array($ipAddress, $json['addresses'])) {
+            return $json;
+        }
+
         $json['addresses'][] = $ipAddress;
 
         $fileHandle = fopen($path, "r+");
