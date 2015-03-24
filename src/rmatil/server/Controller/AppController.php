@@ -100,7 +100,7 @@ class AppController extends SlimController {
         $ipAddressPortPair = array('address' => $ipAddress, 'port' => $port);
 
         if (in_array($ipAddressPortPair, $json['addresses'])) {
-            return $json;
+            return json_encode($json);
         }
 
         $json['addresses'][] = $ipAddressPortPair;
