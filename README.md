@@ -3,8 +3,8 @@
 ## Available REST routes
 
 * `GET /ip-addresses` Returns all current registered IP addresses
-* `POST /ip-addresses/new` Stores a new address on the server. Requires a form field `address` with the IP address in it
-* `GET /ip-addresses/refresh` Pings all current registered IP addresses and removes all, which do not respond
+* `POST /ip-addresses/new` Stores a new address-port-pair on the server. Requires a form field `address` as well as a field `port`
+* `POST /ip-addresses/remove` Removes a certain address-port-pair from the list
 
 ## Authentication
 
