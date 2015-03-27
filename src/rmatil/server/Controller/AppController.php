@@ -133,7 +133,9 @@ class AppController extends SlimController {
 
         $ipAddressPortPair = array('address' => $ipAddress, 'port' => $port);
 
-        if(false !== ($key = array_search($ipAddressPortPair, $json['addresses']))) {
+        if (is_array($json) &&
+            array_key_exists('addresses', $json) &&
+            false !== ($key = array_search($ipAddressPortPair, $json['addresses']))) {
             unset($json['addresses'][$key]);
         }
 
