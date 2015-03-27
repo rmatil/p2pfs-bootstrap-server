@@ -141,7 +141,9 @@ class AppController extends SlimController {
 
         // because $json represents now an associative array and php can't 
         // encode this to a non associative array -> copy values to a new array
-        $updatedJson = array();
+        $updatedJson = array(
+            'addresses' => array()
+        );
         foreach ($json['addresses'] as $addressPortPair) {
             $updatedJson['addresses'][] = $addressPortPair;
         }
