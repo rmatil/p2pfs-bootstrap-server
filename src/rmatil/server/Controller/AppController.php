@@ -110,7 +110,7 @@ class AppController extends SlimController {
 
         $this->app->expires(0);
         $this->app->response->header('Content-Type', 'application/json');
-        $this->app->response->setStatus(HttpStatusCodes::CREATED);
+        $this->app->response->setStatus(HttpStatusCodes::OK);
         $this->app->response->setBody($addresses);
     }
 
