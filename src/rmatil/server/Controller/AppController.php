@@ -141,7 +141,7 @@ class AppController extends SlimController {
         // encode this to a non associative array -> copy values to a new array
         $updatedJson = array();
         foreach ($json['addresses'] as $addressPortPair) {
-            $updatedJson[] = $addressPortPair;
+            $updatedJson['addresses'][] = $addressPortPair;
         }
 
         $fileHandle = fopen($path, "r+");
