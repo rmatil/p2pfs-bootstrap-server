@@ -137,6 +137,13 @@ class AppController extends SlimController {
             unset($json['addresses'][$key]);
         }
 
+        // because $json represents now an associative array and php can't 
+        // encode this to a non associative array -> copy values to a new array
+        $updatedJson = array();
+        foreach ($json['addresses'] as $addressPortPair) {
+            $updatedJson[] = $addressPortPair;
+        }
+
         $fileHandle = fopen($path, "r+");
 
         if (!flock($fileHandle, LOCK_EX)) {  // acquire an exclusive lock
@@ -148,7 +155,7 @@ class AppController extends SlimController {
         ftruncate($fileHandle, 0);
         
         // write content
-        fwrite($fileHandle, json_encode($json));
+        fwrite($fileHandle, json_encode($updatedJson));
         
         // flush output before releasing the lock
         fflush($fileHandle);
@@ -160,7 +167,7 @@ class AppController extends SlimController {
         fclose($fileHandle);
 
         // return json 
-        return json_encode($json);
+        return json_encode($updatedJson);
     }
 
     /**
