@@ -311,7 +311,7 @@ class AppController extends SlimController {
         $updatedJson = array(
             'addresses' => array()
         );
-        foreach ($json['addresses'] as $addressPortPair) {
+        foreach ($jsonArray['addresses'] as $addressPortPair) {
             $updatedJson['addresses'][] = $addressPortPair;
         }
 
