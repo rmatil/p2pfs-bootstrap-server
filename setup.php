@@ -41,6 +41,7 @@ $app->addRoutes(array(
     '/ip-addresses'         => array('get'     => 'App:listIpAddresses'),
     '/ip-addresses/new'     => array('post'    => 'App:insertIpAddress'),
     '/ip-addresses/remove'  => array('post'    => 'App:removeIpAddress'),
+    '/keepalive'            => array('get'     => 'App:keepAlive'),
 ));
 
 // Run app
