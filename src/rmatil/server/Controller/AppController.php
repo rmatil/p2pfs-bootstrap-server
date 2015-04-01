@@ -298,8 +298,7 @@ class AppController extends SlimController {
         $now->setTimezone(new DateTimeZone('Europe/Zurich'));
 
         foreach ($jsonArray['addresses'] as $key => $entry) {
-            $ttl = DateTime::createFromFormat('d.m.Y H:i:s', $entry['ttl']);
-            $ttl->setTimezone(new DateTimeZone('Europe/Zurich'));
+            $ttl = DateTime::createFromFormat('d.m.Y H:i:s', $entry['ttl'], new DateTimeZone('Europe/Zurich'));
 
             // remove entry addresses
             if ($now > $ttl) {
