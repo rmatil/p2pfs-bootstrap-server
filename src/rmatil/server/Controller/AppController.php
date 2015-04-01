@@ -229,7 +229,7 @@ class AppController extends SlimController {
         $json = json_decode($content, true);
 
         foreach ($json['addresses'] as $entry) {
-            if ($address === $entry['address'] &&
+            if ($ipAddress === $entry['address'] &&
                 $port === $entry['port']) {
                 // pair already exists
                 return json_encode($json);
