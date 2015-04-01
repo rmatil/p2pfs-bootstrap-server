@@ -315,6 +315,6 @@ class AppController extends SlimController {
             $updatedJson['addresses'][] = $addressPortPair;
         }
 
-        return $jsonArray;
+        return $updatedJson;
     }
 }
