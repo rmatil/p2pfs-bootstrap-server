@@ -207,6 +207,9 @@ class AppController extends SlimController {
             $updatedJson['addresses'][] = $addressPortPair;
         }
 
+        // remove expired values
+        $json = $this->removeExpiredAddressPairs($json);
+
         return FileUtils::overwriteFileContents($fs, $path, json_encode($updatedJson));
     }
 
@@ -248,9 +251,21 @@ class AppController extends SlimController {
 
         $json['addresses'][] = $ipAddressPortPair;
 
+        // remove expired values
+        $json = $this->removeExpiredAddressPairs($json);
+
         return FileUtils::overwriteFileContents($fs, $path, json_encode($json));
     }
 
+    /**
+     * Updates the ttl of the specified IP address port pair
+     * 
+     * @param  Filesystem $fs        Symfony file system
+     * @param  string     $path      The path to the file (incl. filename)
+     * @param  string     $ipAddress The ip address
+     * @param  string     $port      The corresponding port
+     * @return string                The conftent of the modified file
+     */
     protected function updateKeepAliveStatus(Filesystem $fs, $path, $ipAddress, $port) {
         if (!$fs->exists($path)) {
             throw new FileNotFoundException(sprintf('Path "%s" not found', $path));
@@ -263,7 +278,7 @@ class AppController extends SlimController {
         $timeToLive->setTimezone(new DateTimeZone('Europe/Zurich'));
         $timeToLive->modify('+5 minutes');
 
-        foreach ($json['addresses'] as $entry) {
+        foreach ($json['addresses'] as &$entry) {
             if ($ipAddress === $entry['address'] &&
                 $port === $entry['port']) {
                 // update time to live
@@ -272,6 +287,34 @@ class AppController extends SlimController {
             }
         }
 
+        // remove expired values
+        $json = $this->removeExpiredAddressPairs($json);
+
         return FileUtils::overwriteFileContents($fs, $path, json_encode($json));
+    }
+
+    protected function removeExpiredAddressPairs($jsonArray) {
+        $now = new DateTime();
+        $now->setTimezone(new DateTimeZone('Europe/Zurich'));
+
+        foreach ($jsonArray['addresses'] as $key => $entry) {
+            $ttl = DateTime::createFromFormat('d.m.Y H:i:s', $entry['ttl']);
+
+            // remove entry addresses
+            if ($now > $ttl) {
+                unset($jsonArray['addresses'][$key]);
+            }
+        }
+
+        // because $json represents now an associative array and php can't 
+        // encode this to a non associative array -> copy values to a new array
+        $updatedJson = array(
+            'addresses' => array()
+        );
+        foreach ($json['addresses'] as $addressPortPair) {
+            $updatedJson['addresses'][] = $addressPortPair;
+        }
+
+        return $jsonArray;
     }
 }
