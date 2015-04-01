@@ -10,6 +10,7 @@ use Symfony\Component\Filesystem\Exception\IOException;
 use rmatil\server\Constants\HttpStatusCodes;
 use rmatil\server\Utils\FileUtils;
 use DateTime;
+use DateTimeZone;
 
 class AppController extends SlimController {
 
@@ -22,6 +23,7 @@ class AppController extends SlimController {
             $addresses = FileUtils::readFile($fs, $path);
         } catch (IOExceptionInterface $ioe) {
             $now = new DateTime();
+            $now->setTimezone(new DateTimeZone('Europe/Zurich'));
             $this->app->log->error(sprintf('[%s]: %s', $now->format('d-m-Y H:i:s'), $ioe->getMessage()));
             $this->app->response->setStatus(HttpStatusCodes::NOT_FOUND);
             return;
@@ -52,6 +54,7 @@ class AppController extends SlimController {
             false === preg_match($ipv6Pattern, $ipAddress)) {
 
             $now = new DateTime();
+            $now->setTimezone(new DateTimeZone('Europe/Zurich'));
             $this->app->log->error(sprintf('[%s]: %s', $now->format('d-m-Y H:i:s'), $ipAddress));
             $this->app->response->setStatus(HttpStatusCodes::BAD_REQUEST);
             $this->app->response->setBody('Not valid input');
@@ -63,6 +66,7 @@ class AppController extends SlimController {
             $addresses = $this->writeAddressToJsonToFile($fs, $path, $ipAddress, $port);
         } catch (IOExceptionInterface $ioe) {
             $now = new DateTime();
+            $now->setTimezone(new DateTimeZone('Europe/Zurich'));
             $this->app->log->error(sprintf('[%s]: %s', $now->format('d-m-Y H:i:s'), $ioe->getMessage()));
             $this->app->response->setStatus(HttpStatusCodes::CONFLICT);
             return;
@@ -93,6 +97,7 @@ class AppController extends SlimController {
             false === preg_match($ipv6Pattern, $ipAddress)) {
 
             $now = new DateTime();
+            $now->setTimezone(new DateTimeZone('Europe/Zurich'));
             $this->app->log->error(sprintf('[%s]: %s', $now->format('d-m-Y H:i:s'), $ipAddress));
             $this->app->response->setStatus(HttpStatusCodes::BAD_REQUEST);
             $this->app->response->setBody('Not valid input');
@@ -104,6 +109,7 @@ class AppController extends SlimController {
             $addresses = $this->removeAddressOnJsonFile($fs, $path, $ipAddress, $port);
         } catch (IOExceptionInterface $ioe) {
             $now = new DateTime();
+            $now->setTimezone(new DateTimeZone('Europe/Zurich'));
             $this->app->log->error(sprintf('[%s]: %s', $now->format('d-m-Y H:i:s'), $ioe->getMessage()));
             $this->app->response->setStatus(HttpStatusCodes::CONFLICT);
             return;
@@ -134,6 +140,7 @@ class AppController extends SlimController {
             false === preg_match($ipv6Pattern, $ipAddress)) {
 
             $now = new DateTime();
+            $now->setTimezone(new DateTimeZone('Europe/Zurich'));
             $this->app->log->error(sprintf('[%s]: %s', $now->format('d-m-Y H:i:s'), $ipAddress));
             $this->app->response->setStatus(HttpStatusCodes::BAD_REQUEST);
             $this->app->response->setBody('Not valid input');
@@ -145,6 +152,7 @@ class AppController extends SlimController {
             $addresses = $this->updateKeepAliveStatus($fs, $path, $ipAddress, $port);
         } catch (IOExceptionInterface $ioe) {
             $now = new DateTime();
+            $now->setTimezone(new DateTimeZone('Europe/Zurich'));
             $this->app->log->error(sprintf('[%s]: %s', $now->format('d-m-Y H:i:s'), $ioe->getMessage()));
             $this->app->response->setStatus(HttpStatusCodes::CONFLICT);
             return;
@@ -229,6 +237,7 @@ class AppController extends SlimController {
         }
 
         $timeToLive = new DateTime();
+        $timeToLive->setTimezone(new DateTimeZone('Europe/Zurich'));
         $timeToLive->modify('+5 minutes');
 
         $ipAddressPortPair = array(
@@ -251,6 +260,7 @@ class AppController extends SlimController {
         $json = json_decode($content, true);
 
         $timeToLive = new DateTime();
+        $timeToLive->setTimezone(new DateTimeZone('Europe/Zurich'));
         $timeToLive->modify('+5 minutes');
 
         foreach ($json['addresses'] as $entry) {
