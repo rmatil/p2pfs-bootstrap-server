@@ -33,15 +33,27 @@ Using `curl`:
 
 * Getting all addresses:
 
-    ```
+    
+
+```
+#!bash
+
     $ curl http://188.226.178.35/ip-addresses\?token\=tabequals4
     {"addresses":[{"address":"192.168.122.1","port":"4000","ttl":"17.05.2015 09:28:59"}]}
-    ```
+```
+
+    
 
 * Removal of an address:
 
 
-    ```
+    
+
+```
+#!bash
+
     $ curl -H "Content-Type: application/x-www-form-urlencoded" -X POST -d 'address=192.168.122.1&port=4000' 'http://188.226.178.35/ip-addresses/remove?token=tabequals4' 
     {"addresses":[]}
-    ```
+```
+
+    
