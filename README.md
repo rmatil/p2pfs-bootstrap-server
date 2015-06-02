@@ -1,4 +1,5 @@
 # This is the repo of the bootstrap contacting server
+The corresponding p2pfs can be found [here](https://github.com/rmatil/p2pfs)
 
 ## Architecture
 For a rough architectural overview of this server see [this link](https://bitbucket.org/rmatil/comsys_bootstrap_server/wiki/Home)
