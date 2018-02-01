@@ -53,7 +53,7 @@ Using `curl`:
 ```
 #!bash
 
-    $ curl -H "Content-Type: application/x-www-form-urlencoded" -X POST -d 'address=192.168.122.1&port=4000' 'http://188.226.178.35/ip-addresses/remove?token=tabequals4' 
+    $ curl -H "Content-Type: application/x-www-form-urlencoded" -X POST -d 'address=192.168.122.1&port=4000' 'http://<some-ip>/ip-addresses/remove?token=tabequals4' 
     {"addresses":[]}
 ```
 
